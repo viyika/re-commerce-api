@@ -1,7 +1,8 @@
 package dev.viyika.recommerceapi.category.models;
 
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.annotation.Collation;
 
-@Document
-public record Category(long id, String name, Status status, String description) {
+@Collation
+public record Category(@Id String id, String name, Status status, String description) {
 }

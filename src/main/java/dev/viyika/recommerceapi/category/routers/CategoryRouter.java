@@ -1,5 +1,8 @@
 package dev.viyika.recommerceapi.category.routers;
 
+import dev.viyika.recommerceapi.category.models.Category;
+import dev.viyika.recommerceapi.category.services.CategoryService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RouterFunction;
@@ -9,7 +12,9 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
 
 @Configuration
+@RequiredArgsConstructor
 public class CategoryRouter {
+    final CategoryService categoryService;
     @Bean
     public RouterFunction routerFunction() {
         return RouterFunctions
@@ -18,7 +23,7 @@ public class CategoryRouter {
                         .GET("", this::allCategories)
                         .GET("/{id}", this::categoryById)
                         .POST("", this::newCategory)
-                        .PUT("/{}", this::updateCategory)
+                        .PUT("/{id}", this::updateCategory)
                         .DELETE("/{id}", this::deleteCategory)
                         .build()
                 )
@@ -26,22 +31,40 @@ public class CategoryRouter {
     }
 
     private Mono<ServerResponse> deleteCategory(ServerRequest request) {
-        return null;
+        var id = request.pathVariable("id");
+        return categoryService
+                .deleteById(id)
+                .then(ServerResponse.ok().build());
     }
 
     private Mono<ServerResponse> updateCategory(ServerRequest request) {
-        return null;
+        var id = request.pathVariable("id");
+        return request
+                .bodyToMono(Category.class)
+                .log()
+                .flatMap(category -> categoryService.update(id, category))
+                .flatMap(category -> ServerResponse.ok().bodyValue(category));
     }
 
     private Mono<ServerResponse> newCategory(ServerRequest request) {
-        return null;
+        return request
+                .bodyToMono(Category.class)
+                .log()
+                .flatMap(category -> categoryService.save(category))
+                .flatMap(category -> ServerResponse.ok().bodyValue(category));
     }
 
     private Mono<ServerResponse> categoryById(ServerRequest request) {
-        return null;
+        var id = request.pathVariable("id");
+        return categoryService
+                .findById(id)
+                .flatMap(category -> ServerResponse.ok().bodyValue(category));
     }
 
     private Mono<ServerResponse> allCategories(ServerRequest request) {
-        return null;
+        return categoryService
+                .fetchAll()
+                .collectList()
+                .flatMap(categories -> ServerResponse.ok().bodyValue(categories));
     }
 }
