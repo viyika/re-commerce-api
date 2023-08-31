@@ -7,6 +7,8 @@ on:
 
 jobs:
   build:
+    permissions: 
+      packages: write
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v3
@@ -37,7 +39,7 @@ jobs:
 
     - name: Build and push Docker images
       run: |
-        docker images ls
+        docker image ls
         docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
         
         echo ${{ steps.meta.outputs.tags }}
