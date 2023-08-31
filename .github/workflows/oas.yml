@@ -2,9 +2,8 @@ name: OAS deployment
 on:
   workflow_dispatch:
   push:
-    branches: [ "main" ]
     paths:
-    - 'oas/**'
+    - 'oas'
 
 jobs:
   deployment:
