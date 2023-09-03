@@ -23,7 +23,7 @@ jobs:
     - name: versioning
       id: versioning
       run: |
-          VERSION=$(date +"%m%d%Y%H%M")
+          VERSION=$(date +"%d%m%Y%H%M")
           echo ::set-output name=version::$VERSION
 
     - name: Build with Maven
