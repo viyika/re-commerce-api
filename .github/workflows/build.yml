@@ -20,10 +20,16 @@ jobs:
         java-version: '17'
         distribution: 'temurin'
         cache: maven
+    - name: versioning
+      id: versioning
+      run: |
+          VERSION=$(date +"%m%d%Y%H%M")
+          echo ::set-output name=version::$VERSION
+
     - name: Build with Maven
       run: |
         ./mvnw spring-boot:build-image \
-          -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:${{ github.sha }}
+          -Dspring-boot.build-image.imageName=ghcr.io/${{ github.repository }}:${{ steps.versioning.outputs.version }}
 
     - name: Log in to the Container registry
       uses: docker/login-action@65b78e6e13532edd9afa3aa52ac7964289d1a9c1
@@ -35,4 +41,4 @@ jobs:
     - name: Build and push Docker images
       run: |
         docker image ls
-        docker push ghcr.io/${{ github.repository }}:${{ github.sha }}
+        docker push ghcr.io/${{ github.repository }}:${{ steps.versioning.outputs.version }}
