@@ -1,4 +1,5 @@
 name: Build
+run-name: Build Pipeline
 on:
   push:
     branches: [ "main" ]

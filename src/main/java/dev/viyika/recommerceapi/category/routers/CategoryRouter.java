@@ -41,17 +41,17 @@ public class CategoryRouter {
         var id = request.pathVariable("id");
         return request
                 .bodyToMono(Category.class)
-                .log()
                 .flatMap(category -> categoryService.update(id, category))
-                .flatMap(category -> ServerResponse.ok().bodyValue(category));
+                .flatMap(category -> ServerResponse.ok().bodyValue(category))
+                .log();
     }
 
     private Mono<ServerResponse> newCategory(ServerRequest request) {
         return request
                 .bodyToMono(Category.class)
-                .log()
                 .flatMap(category -> categoryService.save(category))
-                .flatMap(category -> ServerResponse.ok().bodyValue(category));
+                .flatMap(category -> ServerResponse.ok().bodyValue(category))
+                .log();
     }
 
     private Mono<ServerResponse> categoryById(ServerRequest request) {

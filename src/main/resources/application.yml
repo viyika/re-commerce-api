@@ -3,6 +3,7 @@ spring:
     name: @project.artifactId@
   data:
     mongodb:
-      uri: ${DB_URI:mongodb://localhost:27017/mydatabase}
+      uri: ${DB_URI:mongodb://localhost:27017}
+      database: ${DB_NAME:mydatabase}
       username: ${DB_USERNAME:root}
       password: ${DB_PASSWORD:secret}
