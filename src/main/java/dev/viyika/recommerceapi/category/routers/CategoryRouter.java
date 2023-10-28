@@ -16,7 +16,7 @@ import reactor.core.publisher.Mono;
 public class CategoryRouter {
     final CategoryService categoryService;
     @Bean
-    public RouterFunction routerFunction() {
+    public RouterFunction<ServerResponse> routerFunction() {
         return RouterFunctions
                 .route()
                 .path("/category", builder -> builder
@@ -42,15 +42,15 @@ public class CategoryRouter {
         return request
                 .bodyToMono(Category.class)
                 .flatMap(category -> categoryService.update(id, category))
-                .flatMap(category -> ServerResponse.ok().bodyValue(category))
+                .flatMap(ServerResponse.ok()::bodyValue)
                 .log();
     }
 
     private Mono<ServerResponse> newCategory(ServerRequest request) {
         return request
                 .bodyToMono(Category.class)
-                .flatMap(category -> categoryService.save(category))
-                .flatMap(category -> ServerResponse.ok().bodyValue(category))
+                .flatMap(categoryService::save)
+                .flatMap(ServerResponse.ok()::bodyValue)
                 .log();
     }
 
@@ -58,13 +58,13 @@ public class CategoryRouter {
         var id = request.pathVariable("id");
         return categoryService
                 .findById(id)
-                .flatMap(category -> ServerResponse.ok().bodyValue(category));
+                .flatMap(ServerResponse.ok()::bodyValue);
     }
 
     private Mono<ServerResponse> allCategories(ServerRequest request) {
         return categoryService
                 .fetchAll()
                 .collectList()
-                .flatMap(categories -> ServerResponse.ok().bodyValue(categories));
+                .flatMap(ServerResponse.ok()::bodyValue);
     }
 }

@@ -1,5 +1,6 @@
 package dev.viyika.recommerceapi.category.services;
 
+import dev.viyika.recommerceapi.category.CategoryNotFound;
 import dev.viyika.recommerceapi.category.models.Category;
 import dev.viyika.recommerceapi.category.repositories.CategoryRepository;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,9 @@ public class CategoryService {
     }
 
     public Mono<Category> findById(String id) {
-        return categoryRepository.findById(id);
+        return categoryRepository
+                .findById(id)
+                .switchIfEmpty(Mono.error(new CategoryNotFound("Category not found")));
     }
 
     public Mono<Category> save(Category category) {
@@ -24,9 +27,10 @@ public class CategoryService {
     }
 
     public Mono<Category> update(String id, Category category) {
-        return categoryRepository.findById(id)
-                .flatMap(existingCategory -> {
-                    var toBeSave = new Category(existingCategory.id(), category.name(), category.status(), category.description());
+        return categoryRepository
+                .findById(id)
+                .flatMap(dbCategory -> {
+                    var toBeSave = new Category(dbCategory.id(), category.name(), category.status(), category.description());
                     return categoryRepository.save(toBeSave);
                 });
     }

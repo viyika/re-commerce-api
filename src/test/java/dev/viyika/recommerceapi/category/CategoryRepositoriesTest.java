@@ -1,9 +1,7 @@
-package dev.viyika.recommerceapi.repositories;
+package dev.viyika.recommerceapi.category;
 
 import dev.viyika.recommerceapi.category.models.Category;
-import dev.viyika.recommerceapi.category.models.Status;
 import dev.viyika.recommerceapi.category.repositories.CategoryRepository;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,9 +13,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import reactor.test.StepVerifier;
 
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 @DataMongoTest
@@ -37,7 +33,7 @@ public class CategoryRepositoriesTest {
         assertAll(
                 //create
                 () -> {
-                    var category = new Category("1", "test", Status.ACTIVE, "test");
+                    var category = new Category("1", "test", true, "test");
                     StepVerifier
                             .create(categoryRepository.save(category))
                             .consumeNextWith(savedCategory -> {
@@ -56,7 +52,7 @@ public class CategoryRepositoriesTest {
                             .consumeNextWith(savedCategory -> {
                                 assertNotNull(savedCategory.id());
                                 assertEquals("test", savedCategory.name());
-                                assertEquals(Status.ACTIVE, savedCategory.status());
+                                assertTrue(savedCategory.status());
                                 assertEquals("test", savedCategory.description());
                             })
                             .verifyComplete();
@@ -69,7 +65,7 @@ public class CategoryRepositoriesTest {
                 },
                 //update
                 () -> {
-                    var category = new Category("1", "test2", Status.INACTIVE, "test2");
+                    var category = new Category("1", "test2", false, "test2");
                     StepVerifier
                             .create(categoryRepository.save(category))
                             .consumeNextWith(savedCategory -> {

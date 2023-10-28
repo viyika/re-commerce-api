@@ -4,5 +4,4 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.annotation.Collation;
 
 @Collation
-public record Category(@Id String id, String name, Status status, String description) {
-}
+public record Category(@Id String id, String name, boolean status, String description) {}
